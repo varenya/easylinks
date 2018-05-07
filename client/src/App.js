@@ -11,9 +11,12 @@ class App extends Component {
     super(props);
     this.removeItem = this.removeItem.bind(this);
     this.addLink = this.addLink.bind(this);
+    this.loadEditLink = this.loadEditLink.bind(this);
+    this.editLink = this.editLink.bind(this);
   }
   state = {
-    links: []
+    links: [],
+    updateItem: null
   };
   componentDidMount() {
     this.callApi()
@@ -33,6 +36,30 @@ class App extends Component {
   removeApi = async itemIndex => {
     const response = await fetch("/link/" + itemIndex, {
       method: "DELETE"
+    });
+    const body = await response.json();
+    return body;
+  };
+  loadEditLink(item) {
+    this.setState({ updateItem: item });
+  }
+  editLink(link) {
+    // console.log(link);
+    this.editLinkApi(link).then(data => {
+      this.setState({ updateItem: null });
+      let array = [...this.state.links];
+      var foundIndex = array.findIndex(x => x._id === data._id);
+      array[foundIndex] = data;
+      this.setState({links: array});
+    });
+  }
+  editLinkApi = async link => {
+    const response = await fetch("/link/" + link._id, {
+      method: "PUT",
+      body: JSON.stringify(link),
+      headers: new Headers({
+        "Content-Type": "application/json"
+      })
     });
     const body = await response.json();
     return body;
@@ -71,19 +98,19 @@ class App extends Component {
           item={item}
           index={item._id}
           removeItem={this.removeItem}
+          loadEditLink={this.loadEditLink}
         />
       );
     });
-    var tableHeader = 
-       (
-        <tr>
-          <th>Title</th>
-          <th>URL</th>
-          <th>Category</th>
-          <th>Rate</th>
-          <th></th>
-        </tr>
-      );
+    var tableHeader = (
+      <tr>
+        <th>Title</th>
+        <th>URL</th>
+        <th>Category</th>
+        <th>Rate</th>
+        <th />
+      </tr>
+    );
     return (
       <div className="App">
         <header className="App-header">
@@ -91,7 +118,11 @@ class App extends Component {
           <h1 className="App-title">Welcome to React</h1>
         </header>
         <div className="main">
-          <CreateLink addLink={this.addLink} className='form-inline' />
+          {this.state.updateItem ? (
+            <CreateLink addLink={this.editLink} item={this.state.updateItem} />
+          ) : (
+            <CreateLink addLink={this.addLink} />
+          )}
           <table className="table table-striped table-hover">
             <thead>{tableHeader}</thead>
             <tbody>{items}</tbody>
