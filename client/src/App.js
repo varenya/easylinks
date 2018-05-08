@@ -28,8 +28,8 @@ class App extends Component {
   removeItem(itemIndex) {
     this.removeApi(itemIndex).then(msg => {
       // TODO: Do something with the msg
-      let array = [...this.state.links]; // make a separate copy of the array
-      let newState = array.filter(link => link._id !== itemIndex);
+      // let array = [...this.state.links]; // make a separate copy of the array
+      let newState = this.state.links.filter(link => link._id !== itemIndex);
       this.setState({ links: newState });
     });
   }
