@@ -6,6 +6,8 @@ import "./App.css";
 import ListItem from "./components/ListItem";
 import CreateLink from "./components/CreateLink";
 
+/* Stick to one form of syntax i.e. if you want to use async/await use them consitently same thing with let/var avoid using var */
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -25,10 +27,15 @@ class App extends Component {
       })
       .catch(err => console.log(err));
   }
+
+  // you can use the instance properties syntax and avoid the binds on top 
   removeItem(itemIndex) {
+
+    // use async await syntax here as well and clean it up better
     this.removeApi(itemIndex).then(msg => {
       // TODO: Do something with the msg
       // let array = [...this.state.links]; // make a separate copy of the array
+      // u don't need to create a separate copy filter creates a new copy everytime same with map so this works
       let newState = this.state.links.filter(link => link._id !== itemIndex);
       this.setState({ links: newState });
     });
@@ -48,6 +55,7 @@ class App extends Component {
     this.editLinkApi(link).then(data => {
       this.setState({ updateItem: null });
       let array = [...this.state.links];
+      //  Use map here instead and this will become much more concise
       var foundIndex = array.findIndex(x => x._id === data._id);
       array[foundIndex] = data;
       this.setState({links: array});
@@ -67,6 +75,8 @@ class App extends Component {
   addLink(newLink) {
     this.addLinkApi(newLink).then(data => {
       // console.log(data);
+
+      // You can use concat here 
       let array = [...this.state.links];
       array.push(data);
       this.setState({ links: array });
@@ -112,6 +122,7 @@ class App extends Component {
       </tr>
     );
     return (
+      /* Rather than creating variables do it inline as much as possible it makes the code lot more readable and maintainable in the future*/
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />

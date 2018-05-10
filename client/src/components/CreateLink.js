@@ -15,6 +15,9 @@ class CreateLink extends Component {
     isValidated: false
   };
   validate = () => {
+
+    /* you don't need to refs here at all the component is controlled already u have everything in state itself 
+       use them instead of using DOM selectors. That will remove most of the code here*/
     const formLength = this.formEl.length;
 
     if (this.formEl.checkValidity() === false) {
@@ -91,6 +94,7 @@ class CreateLink extends Component {
     this.setState({ [name]: value });
   }
   render() {
+    // Dont need to do this, in fact don't do it
     const props = [...this.props];
     // let title = this.props.item ? this.props.item.title : "";
     // let url = this.props.item ? this.props.item.url : "";
